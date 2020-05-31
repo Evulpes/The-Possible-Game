@@ -2,17 +2,14 @@
 using System.Diagnostics;
 using System.Linq;
 using System.Runtime.InteropServices;
+//See https://github.com/Evulpes/Generic-Bytescan-Library
+using Generic_Bytescan_Library;
 
 namespace The_Possible_Game
 {
-    //TODO: Add byte scanning.
-
     class Program
     {
-        /// <summary>
-        /// The offset for the "death" function.
-        /// </summary>
-        public const int CALL_RET_OFFSET = 0x3389E;
+
         
         /// <summary>
         /// An array of 5 NOP opcodes.
@@ -31,15 +28,21 @@ namespace The_Possible_Game
             Process p = Process.GetProcessesByName("ImpossibleGame").FirstOrDefault();
 
             if (p == null)
-                throw new Exception("Impossible Game Not Running");
+                throw new Exception("Impossible Game not running");
 
             IntPtr handle = NativeMethods.Processthreadsapi.OpenProcess(0x001F0FFF, false, p.Id);
 
             if (handle == IntPtr.Zero)
                 throw new Exception("Invalid Handle");
 
+            ByteScan.FindInBaseModule(p, expectedOverwriteBytes, out IntPtr[] offsets);
 
-            IntPtr callRetAddr = p.MainModule.BaseAddress + CALL_RET_OFFSET;
+            if (offsets.Length == 0)
+                throw new Exception("No matching pattern found");
+
+
+
+            IntPtr callRetAddr = p.MainModule.BaseAddress + (int)offsets[0];
 
             byte[] outputBytes = new byte[5];
             
