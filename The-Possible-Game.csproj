@@ -6,6 +6,10 @@
     <RootNamespace>The_Possible_Game</RootNamespace>
   </PropertyGroup>
 
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
+    <PlatformTarget>x86</PlatformTarget>
+  </PropertyGroup>
+
   <ItemGroup>
     <Reference Include="Generic-Bytescan-Library">
       <HintPath>libs\Generic-Bytescan-Library.dll</HintPath>
