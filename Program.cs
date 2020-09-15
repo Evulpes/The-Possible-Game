@@ -10,16 +10,7 @@ namespace The_Possible_Game
 {
     class Program
     {
-
-        private static readonly uint IsDebuggerPresentByte = 0x8F5000;
-        /// <summary>
-        /// An array of 5 NOP opcodes.
-        /// </summary>
         public static readonly byte[] nopSlideArray = new byte[] { 0x90, 0x90, 0x90, 0x90, 0x90 };
-
-        /// <summary>
-        /// The expected bytes to be found at the read address.
-        /// </summary>
         public static readonly byte[] expectedOverwriteBytes = new byte[] { 0xe8, 0xad, 0xc6, 0xff, 0xff };
 
         static void Main()
@@ -40,9 +31,7 @@ namespace The_Possible_Game
             if (handle == IntPtr.Zero)
                 throw new Exception("Invalid Handle");
 
-
             ByteScan.FindInBaseModule(p, expectedOverwriteBytes, out IntPtr[] offsets);
-
             if (offsets.Length == 0)
                 throw new Exception("No matching pattern found");
 
@@ -110,9 +99,7 @@ namespace The_Possible_Game
         }
         public enum CustomErrors
         {
-            #region custom
             PROCESS_NOT_RUNNING = 16000,
-            #endregion
         }
     }
 }
