@@ -24,50 +24,44 @@ namespace The_Possible_Game
 
         static void Main()
         {
-            Console.WriteLine("The Impossible Game Launcher");
-
-            AntiAntiCheat.StartAntiDebuggingPatchThread();
-
-
-
             Console.WriteLine("Attempting to patch The Impossible Game.");
-
+            
             Process p = Process.GetProcessesByName("ImpossibleGame").FirstOrDefault();
-
             if (p == null)
                 throw new Exception("Impossible Game not running");
 
-            IntPtr handle = NativeMethods.Processthreadsapi.OpenProcess(NativeMethods.Winnt.ProcessAccessFlags.PROCESS_ALL_ACCESS, false, p.Id);
+            int result = AntiAntiCheat.StartAntiDebuggingPatchThread(p.Id);
+            if (result != 0)
+                Console.WriteLine($"Antidebugging patch failed to apply with error {Marshal.GetLastWin32Error()}");
+            
+            Console.WriteLine("Antidebugging patch applied!");
 
+            IntPtr handle = NativeMethods.Processthreadsapi.OpenProcess(NativeMethods.Winnt.ProcessAccessFlags.PROCESS_ALL_ACCESS, false, p.Id);
             if (handle == IntPtr.Zero)
                 throw new Exception("Invalid Handle");
+
 
             ByteScan.FindInBaseModule(p, expectedOverwriteBytes, out IntPtr[] offsets);
 
             if (offsets.Length == 0)
                 throw new Exception("No matching pattern found");
 
-
-
             IntPtr callRetAddr = p.MainModule.BaseAddress + (int)offsets[0];
-
             byte[] outputBytes = new byte[5];
-            
             
             if(!NativeMethods.Memoryapi.ReadProcessMemory(handle,
                 callRetAddr, outputBytes, 5, out IntPtr _))
                 throw new Exception($"Failed to ReadProcessMemory at address {callRetAddr}. Last Error: {Marshal.GetLastWin32Error()}");
 
-
             if (!outputBytes.SequenceEqual(expectedOverwriteBytes))
                 throw new Exception($"Expected bytes not present at address {callRetAddr}");
 
+            Console.WriteLine("Found death function bytes!");
 
-            //Patch the coorect bytes to a NOP slide.
-            if(!NativeMethods.Memoryapi.WriteProcessMemory(handle, callRetAddr, nopSlideArray, nopSlideArray.Length, out IntPtr _))
+            if (!NativeMethods.Memoryapi.WriteProcessMemory(handle, callRetAddr, nopSlideArray, nopSlideArray.Length, out IntPtr _))
                 throw new Exception($"Failed to WriteProcessMemory at address {callRetAddr}. Last Error: {Marshal.GetLastWin32Error()}");
 
-            Console.WriteLine("Patched. Press any key to continue");
+            Console.WriteLine("Patched death function!\n Press any key to continue");
             Console.ReadKey();
         }
     }
@@ -81,19 +75,10 @@ namespace The_Possible_Game
             0xc6, 0x40, 0x02, 0x00,                     //mov byte ptr [eax+2], 0x0
             0xeb, 0xf2                                  //jmp 0xfffffff4
         };
-        public static int StartAntiDebuggingPatchThread()
+        public static int StartAntiDebuggingPatchThread(int pid)
         {
-            int tigPid;
-            try
-            {
-                tigPid = Process.GetProcessesByName("ImpossibleGame")[0].Id;
-            }
-            catch (IndexOutOfRangeException)
-            {
-                return (int)CustomErrors.PROCESS_NOT_RUNNING;
-            }
 
-            IntPtr handle = NativeMethods.Processthreadsapi.OpenProcess(NativeMethods.Winnt.ProcessAccessFlags.PROCESS_ALL_ACCESS, false, tigPid);
+            IntPtr handle = NativeMethods.Processthreadsapi.OpenProcess(NativeMethods.Winnt.ProcessAccessFlags.PROCESS_ALL_ACCESS, false, pid);
             if (handle == IntPtr.Zero)
                 return Marshal.GetLastWin32Error();
 
@@ -109,7 +94,7 @@ namespace The_Possible_Game
             if (!NativeMethods.Memoryapi.WriteProcessMemory(handle, remoteThreadAddr, isDebuggerPresentByteCheck, isDebuggerPresentByteCheck.Length, out _))
                 return Marshal.GetLastWin32Error();
 
-            IntPtr remoteThreadHandle = NativeMethods.Memoryapi.CreateRemoteThread
+            IntPtr remoteThreadHandle = NativeMethods.Processthreadsapi.CreateRemoteThread
             (
                 handle, IntPtr.Zero, 0, remoteThreadAddr, 
                 IntPtr.Zero, 0, IntPtr.Zero

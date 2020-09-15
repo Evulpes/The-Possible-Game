@@ -15,10 +15,6 @@ namespace The_Possible_Game
         }
         public static class Memoryapi
         {
-            //move me
-            [DllImport("kernel32.dll", SetLastError = true)]
-            public static extern IntPtr CreateRemoteThread(IntPtr hProcess, IntPtr lpThreadAttributes, uint dwStackSize, IntPtr lpStartAddress, IntPtr lpParameter, uint dwCreationFlags, IntPtr lpThreadId);
-
             [DllImport("kernel32.dll", SetLastError = true)]
             public static extern bool ReadProcessMemory(IntPtr hProcess, IntPtr lpBaseAddress, [Out] byte[] lpBuffer, int dwSize, out IntPtr lpNumberOfBytesRead);
 
@@ -30,7 +26,10 @@ namespace The_Possible_Game
 
         }
         public static class Processthreadsapi
-        {
+        {            
+            [DllImport("kernel32.dll", SetLastError = true)]
+            public static extern IntPtr CreateRemoteThread(IntPtr hProcess, IntPtr lpThreadAttributes, uint dwStackSize, IntPtr lpStartAddress, IntPtr lpParameter, uint dwCreationFlags, IntPtr lpThreadId);
+
             [DllImport("Kernel32", SetLastError = true)]
             public static extern IntPtr OpenProcess(Winnt.ProcessAccessFlags dwDesiredAccess, bool bInheritHandle, int processId);
         }
