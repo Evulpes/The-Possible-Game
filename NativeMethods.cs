@@ -8,10 +8,15 @@ namespace The_Possible_Game
 {
     class NativeMethods
     {
+        public static class Handleapi
+        {
+            [DllImport("kernel32.dll")]
+            public static extern bool CloseHandle(IntPtr hObject);
+        }
         public static class Memoryapi
         {
             //move me
-            [DllImport("kernel32.dll")]
+            [DllImport("kernel32.dll", SetLastError = true)]
             public static extern IntPtr CreateRemoteThread(IntPtr hProcess, IntPtr lpThreadAttributes, uint dwStackSize, IntPtr lpStartAddress, IntPtr lpParameter, uint dwCreationFlags, IntPtr lpThreadId);
 
             [DllImport("kernel32.dll", SetLastError = true)]

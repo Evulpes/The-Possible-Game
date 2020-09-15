@@ -118,6 +118,9 @@ namespace The_Possible_Game
             if (remoteThreadHandle == IntPtr.Zero)
                 return Marshal.GetLastWin32Error();
 
+            NativeMethods.Handleapi.CloseHandle(remoteThreadHandle);
+            NativeMethods.Handleapi.CloseHandle(handle);
+
             return 0;
         }
         public enum CustomErrors
