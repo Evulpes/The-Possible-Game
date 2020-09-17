@@ -10,7 +10,14 @@ namespace The_Possible_Game
 {
     class Program
     {
-        public static readonly byte[] nopSlideArray = new byte[] { 0x90, 0x90, 0x90, 0x90, 0x90 };
+        public static readonly byte[] nopSlideArray = new byte[] 
+        { 
+            0x90,   //NOP
+            0x90,   //NOP
+            0x90,   //NOP
+            0x90,   //NOP
+            0x90    //NOP
+        };
         public static readonly byte[] expectedOverwriteBytes = new byte[] { 0xe8, 0xad, 0xc6, 0xff, 0xff };
 
         static void Main()
@@ -36,21 +43,14 @@ namespace The_Possible_Game
                 throw new Exception("No matching pattern found");
 
             IntPtr callRetAddr = p.MainModule.BaseAddress + (int)offsets[0];
-            byte[] outputBytes = new byte[5];
-            
-            if(!NativeMethods.Memoryapi.ReadProcessMemory(handle,
-                callRetAddr, outputBytes, 5, out IntPtr _))
-                throw new Exception($"Failed to ReadProcessMemory at address {callRetAddr}. Last Error: {Marshal.GetLastWin32Error()}");
 
-            if (!outputBytes.SequenceEqual(expectedOverwriteBytes))
-                throw new Exception($"Expected bytes not present at address {callRetAddr}");
 
             Console.WriteLine("Found death function bytes!");
 
             if (!NativeMethods.Memoryapi.WriteProcessMemory(handle, callRetAddr, nopSlideArray, nopSlideArray.Length, out IntPtr _))
                 throw new Exception($"Failed to WriteProcessMemory at address {callRetAddr}. Last Error: {Marshal.GetLastWin32Error()}");
 
-            Console.WriteLine("Patched death function!\n Press any key to continue");
+            Console.WriteLine("Patched death function!\nPress any key to continue");
             Console.ReadKey();
         }
     }
