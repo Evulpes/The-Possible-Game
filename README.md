@@ -94,7 +94,7 @@ And when running this modified code, the game decides it really isn’t interest
   <img src="https://i.imgur.com/vgJo034.png"/>
 </p> 
 
-As a working method, this is fine; we could write a program that simple writes 0xC3 to base address + offset of this function, but if the developers decide that they want to update the game one day there’s a good chance the offset would change. For longevity purposes, it’s going to be better to scan for the function and NOP it out. Luckily, there’s only one reference to this function, and thereby only one set of bytes to scan for:
+As a working method, this is fine; we could write a program that simply writes 0xC3 to base address + offset of this function, but if the developers decide that they want to update the game one day there’s a good chance the offset would change. For longevity purposes, it’s going to be better to scan for the function and NOP it out. Luckily, there’s only one reference to this function, and thereby only one set of bytes to scan for:
 
 <p align="center">
   <img src="https://i.imgur.com/m2Pr7vp.png"/>
