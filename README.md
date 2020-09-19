@@ -35,10 +35,10 @@ The IsDebuggerPresent function checks the [Process Environment Block](https://do
 </p> 
 
 The pseudo code for this is:
-1.	Move the BeingDebugged flag into eax
-2.	Check if the byte at eax+0x2 is 0x1
-3.	If the byte is not 0x1, then jump back to step 1
-4.	If the byte is 0x1, then set it to 0x0
+1.	Move the address of the PEB into eax
+2.	Check if the byte at eax+0x2, the BeingDebugged flag, is 0x1 (True)
+3.	If the byte is not 0x1 (True), then jump back to step 1
+4.	If the byte is 0x1 (True), then set it to 0x0 (False)
 5.	Jump back to step 1
 
 We’re now mom-spaghetti-ready to write the code into the target process. We can call VirtualAllocEx and set the second parameter as IntPtr.Zero, which will allow the function itself to choose a suitable location for us to write our assembly code to, without causing issues. We’ll then use WriteProcessMemory to “install our update”, obviously:
