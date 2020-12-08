@@ -64,7 +64,7 @@ It’s important to note that this thread will never actually terminate and will
 ## Let’s Debug It Like They Debug It on the I/O Channel
 Cool, now that we’ve circumvented the very simple anti-debugging protections, we can look at identifying how to cheese this game. You’ll obviously need to spin up the game and apply the patch we’ve just written to do any debugging.
 
-Now, it is in my very valuable opinion that the easiest way to cheese this game is going to be to simply remove any concept of “death” from the game, preventing the physics interactions with the black objects, and simply “ghosting” through them. Fortunately, [Grip Digital](https://en.wikipedia.org/wiki/Grip_Digital) decided it would be a great convince to them if they added debugging messages to the game. Highlighted are two potentially useful strings that we can likely track and trace:
+Now, it is in my very valuable opinion that the easiest way to cheese this game is going to be to simply remove any concept of “death” from the game, preventing the physics interactions with the black objects, and simply “ghosting” through them. Fortunately, [Grip Digital](https://en.wikipedia.org/wiki/Grip_Digital) decided it would be a great convenience to them if they added debugging messages to the game. Highlighted are two potentially useful strings that we can likely track and trace:
 
 <p align="center">
   <img src="https://i.imgur.com/j48dgoT.png"/>
