@@ -82,7 +82,7 @@ The first one, “RESET”, is immediately thrown when the player encounters an 
 So, what happens if we put a breakpoint at the first string? Well, as expected, the game immediately freezes and stops  at the breakpoint, just as the player hits an object. Thereby, it’s a safe assumption to say that this is the death function, but we can verify this.
 
 ## What Do We Say to The God of Death?
-Let’s pretend that death is a door-to-door salesman and we’d just rather not. By changing the first line of the function call to 0xC3 ([ret](https://c9x.me/x86/html/file_module_x86_id_280.html)), we’re simply telling the function we’re not interested in its content to go back from whence it came (before and after):
+Let’s pretend that death is a door-to-door salesman and we’d just rather not. By changing the first line of the function call to 0xC3 ([ret](https://c9x.me/x86/html/file_module_x86_id_280.html)), we’re simply telling the function we’re not interested in its content and to go back from whence it came (after (left) and before (right)):
 
 <p align="center">
   <img src="https://i.imgur.com/ka8smIf.png"/>
